@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laporan — Billing Rental PlayStation</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Billing Rental PlayStation</div>
+  <nav class="nav">
+    <a href="/">Dashboard</a>
+    <a href="/master">Master Data</a>
+    <a href="/laporan" class="active">Laporan</a>
+  </nav>
+  <div class="topbar-right"></div>
+</header>
+
+<main>
+  <section class="panel">
+    <h2>Laporan Harian</h2>
+    <form class="inline-form" id="formLaporan">
+      <input type="date" id="tglLaporan" required>
+      <button class="primary" type="submit">Tampilkan</button>
+    </form>
+    <div class="stat-row" id="statRow" hidden>
+      <div class="stat"><div class="stat-num" id="statSesi">0</div><div class="stat-label">Sesi selesai</div></div>
+      <div class="stat"><div class="stat-num" id="statPendapatan">Rp0</div><div class="stat-label">Total pendapatan</div></div>
+    </div>
+    <h3>Pendapatan per unit</h3>
+    <table class="data" id="tblPerUnit"><thead>
+      <tr><th>Unit</th><th>Sesi</th><th>Pendapatan</th></tr>
+    </thead><tbody></tbody></table>
+    <h3>Riwayat sesi</h3>
+    <table class="data" id="tblHistory"><thead>
+      <tr><th>Pelanggan</th><th>Unit</th><th>Paket</th><th>Mulai</th>
+          <th>Selesai</th><th>+Waktu</th><th>Total</th></tr>
+    </thead><tbody></tbody></table>
+  </section>
+</main>
+
+<script src="/static/laporan.js"></script>
+</body>
+</html>
