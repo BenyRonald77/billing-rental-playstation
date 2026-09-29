@@ -1,5 +1,5 @@
 """Aplikasi Flask billing rental PlayStation."""
-from flask import Flask
+from flask import Flask, render_template
 
 from billing.api import api_bp
 from billing.db import init_db
@@ -14,7 +14,7 @@ def create_app() -> Flask:
 
     @app.get("/")
     def index():
-        return "Billing Rental PlayStation API — dashboard menyusul di F3"
+        return render_template("index.html")
 
     return app
 
