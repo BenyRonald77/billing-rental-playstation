@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ConsoleType {
+  id          Int      @id @default(autoincrement())
+  nama        String   @unique
+  tarifPerJam Int      @map("tarif_per_jam")
+  packages    Package[]
+  units       Unit[]
+
+  @@map("console_types")
+}
+
+model Package {
+  id            Int         @id @default(autoincrement())
+  consoleTypeId Int         @map("console_type_id")
+  nama          String
+  durasiMenit   Int         @map("durasi_menit")
+  harga         Int
+  consoleType   ConsoleType @relation(fields: [consoleTypeId], references: [id])
+  sessions      Session[]
+
+  @@map("packages")
+}
+
+model Unit {
+  id            Int         @id @default(autoincrement())
+  nama          String      @unique
+  consoleTypeId Int         @map("console_type_id")
+  consoleType   ConsoleType @relation(fields: [consoleTypeId], references: [id])
+  sessions      Session[]
+
+  @@map("units")
+}
+
+model Session {
+  id            Int      @id @default(autoincrement())
+  unitId        Int      @map("unit_id")
+  packageId     Int      @map("package_id")
+  namaPelanggan String   @map("nama_pelanggan")
+  mulai         String
+  selesaiRencana String  @map("selesai_rencana")
+  menitTambahan Int      @default(0) @map("menit_tambahan")
+  selesaiAktual String?  @map("selesai_aktual")
+  status        String   @default("aktif")
+  totalHarga    Int      @map("total_harga")
+  unit          Unit     @relation(fields: [unitId], references: [id])
+  package       Package  @relation(fields: [packageId], references: [id])
+
+  @@index([unitId, status])
+  @@index([mulai])
+  @@map("sessions")
+}

@@ -4,45 +4,47 @@ Sistem billing rental PlayStation: timer realtime per unit, paket jam dengan har
 berbeda per tipe konsol (PS3/PS4/PS5), penambahan waktu di tengah sesi, dan
 dashboard status semua unit (kosong / dipakai / hampir habis).
 
+Stack: Next.js 14 + TypeScript + Prisma + SQLite + Tailwind.
+
 ## Cara Menjalankan
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+npm install
+cp .env.example .env
+npx prisma generate
+npx prisma db push
+npm run seed
+npm run dev
 ```
 
-Buka http://localhost:5000. Database SQLite dibuat otomatis dan di-seed saat
-pertama dijalankan.
+Buka http://localhost:3000. Database dibuat otomatis dan di-seed saat
+pertama dijalankan (`npm run seed`).
 
-## Struktur
+## Halaman
 
-```
-├── PRD.md
-├── DESIGN.md
-├── requirements.txt
-├── app.py                  # Flask app + registrasi blueprint/routes
-├── billing/
-│   ├── __init__.py
-│   ├── db.py               # koneksi SQLite, init schema + seed
-│   ├── schema.sql
-│   ├── seed.sql
-│   ├── pricing.py          # aturan billing (prorata, pembulatan)
-│   └── api.py              # endpoint REST
-├── static/
-│   ├── style.css
-│   └── app.js              # dashboard realtime
-└── templates/
-    └── index.html
-```
+- `/` — Dashboard: grid kartu unit dengan timer mundur realtime, badge status
+  (kosong/dipakai/hampir habis), modal mulai sesi, tombol tambah waktu & selesaikan.
+- `/laporan` — Laporan pendapatan harian + riwayat sesi.
+- `/master` — CRUD tipe konsol, paket, dan unit.
 
 ## API
 
-- `GET /api/units` — semua unit + status + sesi aktif (sisa detik)
-- `GET /api/console-types`, `GET /api/packages?console_type_id=`
+- `GET /api/units/status` — semua unit + status hitung + sesi aktif (sisa detik)
+- `GET /api/console-types`, `POST /api/console-types`, `PUT/DELETE /api/console-types/[id]`
+- `GET /api/packages?console_type_id=`, `POST /api/packages`, `PUT/DELETE /api/packages/[id]`
+- `GET /api/units`, `POST /api/units`, `PUT/DELETE /api/units/[id]`
 - `POST /api/sessions/start` — `{unit_id, package_id, nama_pelanggan}`
-- `POST /api/sessions/<id>/add-time` — `{menit}`
-- `POST /api/sessions/<id>/finish`
+- `POST /api/sessions/[id]/add-time` — `{menit}`
+- `POST /api/sessions/[id]/finish`
 - `GET /api/sessions/history?date=YYYY-MM-DD`
 - `GET /api/reports/daily?date=YYYY-MM-DD`
-- CRUD: `/api/console-types`, `/api/packages`, `/api/units`
+
+## Aturan Billing
+
+- Sesi dimulai dengan paket: harga flat sesuai harga paket (bayar di muka).
+- Tambah waktu: prorata dari tarif per jam tipe konsol, dibulatkan ke atas ke
+  kelipatan Rp500.
+- Selesai lebih awal: tidak ada refund (paket bersifat flat).
+- Satu unit hanya boleh punya satu sesi aktif.
+- Server adalah source of truth untuk timer (`selesai_rencana`); client
+  menghitung mundur tiap detik.

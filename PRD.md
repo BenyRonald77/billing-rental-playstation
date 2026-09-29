@@ -12,10 +12,11 @@ di tengah jalan, dan menyelesaikan sesi dengan total tagihan yang benar.
 
 ## Stack
 
-- Backend: Python + Flask, SQLite (stdlib `sqlite3`, tanpa ORM)
-- Frontend: satu halaman HTML + vanilla JS + CSS murni (tanpa build step)
-- Timer: server sebagai source of truth (`end_time`); client menghitung mundur
-  tiap detik dari `end_time` server. Status disinkron via polling `/api/units`.
+- Backend: Next.js 14 (App Router) + TypeScript, Prisma ORM, SQLite
+- Frontend: halaman React per fitur + Tailwind (tanpa build step terpisah)
+- Timer: server sebagai source of truth (`selesai_rencana`); client menghitung
+  mundur tiap detik dari `selesai_rencana` server. Status disinkron via polling
+  `/api/units/status`.
 
 ## Model Data
 
